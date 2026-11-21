@@ -28,24 +28,30 @@ happens to it when its source changes or disappears.
    seen. The link still follows its path to the source, resolving to the
    deepest glyph it can reach.
 
-4. **Deleting the source never deletes material.** If the source glyph or any
+4. **A changed source is marked.** When the source glyph changes after the
+   snapshot was taken, every backlink to it gains a "source changed" marker,
+   even if the change is not visible in the snapshot.
+
+5. **Deleting the source never deletes material.** If the source glyph or any
    of its ancestors is deleted, every backlink to it keeps its snapshot and the
    annotations attached to it, gains a tombstone marker, and can no longer be
    followed. Because content is a snapshot, deletion does not cascade through
    chains of links.
 
-5. **One source, many destinations.** When a region has been used in several
+6. **One source, many destinations.** When a region has been used in several
    places, clicking its forward-link indicator shows a short list of the
    destinations, each named by its document.
 
-6. **Indicators can be hidden.** A single view toggle shows or hides every
+7. **Indicators can be hidden.** A single view toggle shows or hides every
    backlink and forward-link indicator, so content can be read cleanly. While
    visible, indicators are clickable.
 
 ## Consequences
 
 - Storage keeps links in both directions, so a source knows its forward links
-  and a deletion can find every backlink to tombstone.
+  and a change or deletion can find every backlink to mark.
+- Each snapshot records the version of the source glyph it was taken from,
+  so a change is detected by comparing versions rather than images.
 - Indicators are small, local marks, so toggling them is cheap on e-paper
   ([0003](0003-design-philosophy.md), principle 8).
 - The look of quotations, citations, indicators, and tombstones is left to the

@@ -22,6 +22,11 @@ Verified in the emulator (below):
 | 3.27.1.0  | `5.7.121 (scarthgap)`  | 2.39  | 6.8.2  |
 | 3.29.1.0  | `6.0.112 (wrynose)`    | 2.43  | 6.10.3 |
 
+Verified on hardware: a Paper Pro on 3.29.1.1831 (`6.0.112 (wrynose)`, Qt
+6.10.3). Its input devices are `snvs-powerkey` (`event0`), `Hall effect
+sensors` (`event1`), `Elan marker input` (`event2`), and `Elan touch input`
+(`event3`).
+
 The display platform plugin is `/usr/lib/plugins/platforms/libepaper.so`, and
 the e-paper engine is `/usr/lib/plugins/scenegraph/libqsgepaper.so`. The shell
 is BusyBox, so some GNU tools (such as `ldd`) are missing.
@@ -98,7 +103,9 @@ Caveats:
    warning on every boot, and can only be undone through recovery mode. Sync
    your documents first.
 2. Find the root password under *Settings → General → Help → About →
-   Copyrights and Licenses*.
+   Copyrights and Licenses*, in the *General Information* section. If it is
+   not there, developer mode is not on; SSH then accepts connections but
+   drops them before logging in.
 3. Connect over USB and copy the binary:
 
    ```sh
@@ -116,7 +123,9 @@ Notes:
 ## Display and input
 
 Stepanova stops `xochitl` and drives reMarkable's e-paper engine directly; see
-[decision 0002](decisions/0002-takeover-display.md). The device binary handles
+`crates/device/src/vendor.rs`. It resolves private symbols of the vendor
+engine at runtime, so each firmware release can break it; CI smoke-tests every
+supported version in the emulator. The device binary handles
 the takeover itself. To try it in the emulator:
 
 ```sh

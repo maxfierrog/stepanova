@@ -11,8 +11,7 @@ its source document and its location inside it, recursively, so the agent sees
 exactly what you see.
 
 The project is in its earliest stage. The design is developed incrementally
-through experimentation on the device, and recorded in
-[`docs/decisions`](docs/decisions).
+through experimentation on the device.
 
 ## Layout
 

@@ -38,9 +38,8 @@ and must always build and pass CI.
    good one.
 
 `exp/` branches are never merged as-is. When an experiment produces something
-worth keeping, write it up (code on a `feat/` branch, findings in
-[`docs/decisions`](docs/decisions) or [`docs`](docs)) and delete the
-experiment branch.
+worth keeping, keep it (code on a `feat/` branch, and anything other contributors need to
+know in [`docs`](docs)) and delete the experiment branch.
 
 Releases are tags of the form `vMAJOR.MINOR.PATCH` on `main`, following
 semantic versioning.
@@ -71,8 +70,6 @@ semantic versioning.
   documented; the workspace warns on missing docs.
 - **Guides** (building, toolchain, architecture) live as Markdown in
   [`docs`](docs), versioned with the code. There is no wiki.
-- **Research** (surveys, experiment results) lives in
-  [`docs/research`](docs/research), with dated file names.
-- **Decisions** that shape the project are recorded as short, numbered records
-  in [`docs/decisions`](docs/decisions). Add one when you make a choice that a
-  future contributor would otherwise have to rediscover.
+
+Documentation is for people working on the code: how to build, run, test, and
+change it. Design rationale is not kept in the repository.

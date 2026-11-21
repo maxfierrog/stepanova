@@ -51,4 +51,9 @@ reMarkable SDK to build.
   exits.
 - Verified in the emulator on 3.27.1.0 and 3.29.1.0: drawing works, and software latency
   from pen event to refresh submission is about 5 ms at p50 and 9 ms at p95.
-  The panel's own latency can only be measured on hardware.
+- Verified on a Paper Pro running 3.29.1.1831 (2026-11-21): drawing, erasing,
+  and exit work, and `xochitl` comes back. Software latency from pen event to
+  refresh submission was 8.3 ms at p50, 11.7 ms at p95, and 27 ms at worst over
+  1029 refreshes. Refreshes are batched into windows of up to 8 ms, which
+  accounts for much of the median. The panel's own latency has not been
+  measured.

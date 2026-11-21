@@ -30,24 +30,26 @@ happens to it when its source changes or disappears.
 
 4. **A changed source is marked.** When the source glyph changes after the
    snapshot was taken, every backlink to it gains a "source changed" marker,
-   even if the change is not visible in the snapshot. Reviewing the change
-   clears the marker: the reader compares the snapshot with the current source
-   and either retakes the snapshot or keeps it as it is.
-
-   Every changed source and tombstone in the library is listed in one central
-   review place, so links can be kept consistent without hunting for them.
+   even if the change is not visible in the snapshot.
 
 5. **Deleting the source never deletes material.** If the source glyph or any
    of its ancestors is deleted, every backlink to it keeps its snapshot and the
-   annotations attached to it, gains a tombstone marker, and can no longer be
-   followed. Because content is a snapshot, deletion does not cascade through
+   annotations attached to it, gains a tombstone marker, and cannot be
+   followed until it is reviewed. Because content is a snapshot, deletion does not cascade through
    chains of links.
 
-6. **One source, many destinations.** When a region has been used in several
+6. **Changes and tombstones are reviewed the same way.** The reader either
+   **re-does** the selection (on the changed source, or anywhere else when the
+   source is gone), or **confirms** the existing snapshot as it is. Either one
+   clears the marker. Every marked backlink in the library is listed in one
+   central review place, so links can be kept consistent without hunting for
+   them.
+
+7. **One source, many destinations.** When a region has been used in several
    places, clicking its forward-link indicator shows a short list of the
    destinations, each named by its document.
 
-7. **Indicators can be hidden.** A single view toggle shows or hides every
+8. **Indicators can be hidden.** A single view toggle shows or hides every
    backlink and forward-link indicator, so content can be read cleanly. While
    visible, indicators are clickable.
 

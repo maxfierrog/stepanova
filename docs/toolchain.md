@@ -15,6 +15,11 @@ versions before relying on them.
 | Stock UI       | `xochitl`, Qt 6 / Qt Quick, started by systemd             |
 | Rust target    | `aarch64-unknown-linux-gnu`                                |
 
+Verified on software 3.27.1.0 (in the emulator, below): OS `5.7.121
+(scarthgap)`, glibc 2.39, Qt 6.8.2, and the platform plugin
+`/usr/lib/plugins/platforms/libepaper.so`. The shell is BusyBox, so some
+GNU tools (such as `ldd`) are missing.
+
 The Paper Pro Move (`chiappa`, 954x1696) is a sibling device and not a target
 yet.
 
@@ -29,8 +34,8 @@ cargo device                      # alias defined in .cargo/config.toml
 ```
 
 The output is `target/aarch64-unknown-linux-gnu/release/stepanova`. The alias
-targets glibc 2.35 as a floor, which is older than the device's glibc and
-therefore safe. This works for pure-Rust code and for C code built from source.
+targets glibc 2.35 as a floor, which is older than the device's glibc (2.39)
+and therefore safe. CI also builds this binary and uploads it as an artifact. This works for pure-Rust code and for C code built from source.
 
 ### Official SDK (only when linking device libraries)
 

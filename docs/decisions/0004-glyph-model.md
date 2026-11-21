@@ -66,7 +66,9 @@ nodes; Stepanova extends that tree to addressing and caching.
 
 6. **The tree is attachment, and layering is sibling order.** A glyph's parent
    is what it moves with and is anchored to; that changes only when a glyph is
-   deliberately moved onto another one. Z-order is the order of a parent's
+   deliberately moved onto another one. Attachment can nest to any depth: ink
+   written over an image on a canvas moves with the image, and a group moves
+   its members as one. Z-order is the order of a parent's
    children, so layering never changes a link path:
    - **up one and down one** step past the next sibling above or below that
      overlaps the glyph, skipping siblings that do not;
@@ -100,8 +102,6 @@ nodes; Stepanova extends that tree to addressing and caching.
   the unit of PDFs and typography, and it does not depend on the device, so the
   same document measures the same on any display. Integers keep coordinates
   exact and reproducible, and pixels only appear when a glyph is rendered.
-- Open: how deep attachment goes, that is, whether glyphs on a canvas (an
-  image, a group) can carry other glyphs.
 - Marks drawn during navigation may use quality greys. Marks drawn live while
   selecting must stay thin, 1-bit, and local ([0003](0003-design-philosophy.md),
   principle 8).

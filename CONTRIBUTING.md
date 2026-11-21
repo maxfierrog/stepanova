@@ -66,6 +66,8 @@ semantic versioning.
   documented; the workspace warns on missing docs.
 - **Guides** (building, toolchain, architecture) live as Markdown in
   [`docs`](docs), versioned with the code. There is no wiki.
+- **Research** (surveys, experiment results) lives in
+  [`docs/research`](docs/research), with dated file names.
 - **Decisions** that shape the project are recorded as short, numbered records
   in [`docs/decisions`](docs/decisions). Add one when you make a choice that a
   future contributor would otherwise have to rediscover.

@@ -26,7 +26,8 @@ use std::sync::atomic::Ordering;
 
 /* CONSTANTS */
 
-const SWAP: &CStr = c"_ZN13EPFramebuffer11swapBuffersE5QRect13EPContentType12EPScreenMode6QFlagsINS_10UpdateFlagEE";
+const TYPED: &CStr = c"_ZN13EPFramebuffer11swapBuffersE5QRect13EPContentType12EPScreenMode6QFlagsINS_10UpdateFlagEE";
+const PLAIN: &CStr = c"_ZN13EPFramebuffer11swapBuffersE5QRect12EPScreenMode6QFlagsINS_10UpdateFlagEE";
 const EVENTS: &CStr = c"_ZN16QCoreApplication13processEventsE6QFlagsIN10QEventLoop17ProcessEventsFlagEEi";
 const CTOR: &CStr = c"_ZN6QImageC1EPhiixNS_6FormatEPFvPvES2_";
 const APP: &CStr = c"_ZN16QCoreApplicationC1ERiPPci";
@@ -47,12 +48,25 @@ type Ctor = unsafe extern "C" fn(
     *mut c_void,
     *mut c_void,
 );
-type Swap =
+type Typed =
     unsafe extern "C" fn(*mut c_void, Rect, c_int, c_int, c_int) -> c_ulong;
+type Plain = unsafe extern "C" fn(*mut c_void, Rect, c_int, c_int) -> c_ulong;
 type Events = unsafe extern "C" fn(c_int, c_int);
 type App =
     unsafe extern "C" fn(*mut c_void, *mut c_int, *mut *mut c_char, c_int);
 type Instance = unsafe extern "C" fn() -> *mut c_void;
+
+/* ENUMERATIONS */
+
+/// The engine's region refresh entry point, whose signature differs between
+/// firmware generations.
+#[derive(Clone, Copy)]
+enum Swap {
+    /// OS 5.x (firmware up to 3.28): takes an `EPContentType`.
+    Typed(Typed),
+    /// OS 6.x (firmware 3.29 onward): no content type.
+    Plain(Plain),
+}
 
 /* API STRUCTURES */
 
@@ -149,7 +163,7 @@ impl Engine {
             let handle = open(LIBRARY)?;
             let instance: Instance =
                 std::mem::transmute(find(handle, INSTANCE)?);
-            let swap: Swap = std::mem::transmute(find(handle, SWAP)?);
+            let swap = resolve(handle)?;
             let core = open(CORE)?;
             let events: Events = std::mem::transmute(find(core, EVENTS)?);
             CAPTURE.store(true, Ordering::Release);
@@ -181,8 +195,12 @@ impl Engine {
         mode: c_int,
         full: bool,
     ) -> c_ulong {
+        let flags = full as c_int;
         unsafe {
-            (self.swap)(self.instance, rect, content, mode, full as c_int)
+            match self.swap {
+                Swap::Typed(f) => f(self.instance, rect, content, mode, flags),
+                Swap::Plain(f) => f(self.instance, rect, mode, flags),
+            }
         }
     }
 
@@ -225,6 +243,19 @@ unsafe fn application() -> Result<()> {
         )
     };
     Ok(())
+}
+
+unsafe fn resolve(handle: *mut c_void) -> Result<Swap> {
+    if let Ok(f) = unsafe { find(handle, TYPED) } {
+        return Ok(Swap::Typed(unsafe {
+            std::mem::transmute::<*mut c_void, Typed>(f)
+        }));
+    }
+    let f = unsafe { find(handle, PLAIN) }
+        .context("No known EPFramebuffer::swapBuffers signature.")?;
+    Ok(Swap::Plain(unsafe {
+        std::mem::transmute::<*mut c_void, Plain>(f)
+    }))
 }
 
 unsafe fn open(name: &CStr) -> Result<*mut c_void> {

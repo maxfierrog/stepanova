@@ -15,10 +15,16 @@ versions before relying on them.
 | Stock UI       | `xochitl`, Qt 6 / Qt Quick, started by systemd             |
 | Rust target    | `aarch64-unknown-linux-gnu`                                |
 
-Verified on software 3.27.1.0 (in the emulator, below): OS `5.7.121
-(scarthgap)`, glibc 2.39, Qt 6.8.2, and the platform plugin
-`/usr/lib/plugins/platforms/libepaper.so`. The shell is BusyBox, so some
-GNU tools (such as `ldd`) are missing.
+Verified in the emulator (below):
+
+| Software  | OS                     | glibc | Qt     |
+| --------- | ---------------------- | ----- | ------ |
+| 3.27.1.0  | `5.7.121 (scarthgap)`  | 2.39  | 6.8.2  |
+| 3.29.1.0  | `6.0.112 (wrynose)`    | 2.43  | 6.10.3 |
+
+The display platform plugin is `/usr/lib/plugins/platforms/libepaper.so`, and
+the e-paper engine is `/usr/lib/plugins/scenegraph/libqsgepaper.so`. The shell
+is BusyBox, so some GNU tools (such as `ldd`) are missing.
 
 The Paper Pro Move (`chiappa`, 954x1696) is a sibling device and not a target
 yet.
@@ -62,12 +68,19 @@ not supported.
 ```sh
 git clone https://github.com/aetherino/rmemu ../rmemu
 cd ../rmemu
-bin/rmemu setup 3.27.1.0      # downloads firmware (~200 MB), builds the image
-bin/rmemu start 3.27.1.0
+cd ../stepanova
+scripts/emulator.py ../rmemu 3.29.1.0   # downloads firmware (~220 MB), builds the image
+cd ../rmemu
+bin/rmemu start 3.29.1.0
 bin/rmemu open                # simulator at http://127.0.0.1:7777
 bin/rmemu push ../stepanova/target/aarch64-unknown-linux-gnu/release/stepanova /home/root/stepanova
 bin/rmemu ssh /home/root/stepanova
 ```
+
+`scripts/emulator.py` provisions any version in
+[codexctl's firmware index](https://github.com/Jayy001/codexctl), which tracks
+releases more closely than rmemu's built-in `setup` command. CI smoke-tests
+every supported version (see `.github/workflows/ci.yml`).
 
 Caveats:
 

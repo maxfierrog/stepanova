@@ -38,13 +38,17 @@ happens to it when its source changes or disappears.
    followed. Because content is a snapshot, deletion does not cascade through
    chains of links.
 
-6. **Changes and tombstones are reviewed the same way.** The reader either
-   **re-does** the selection (on the changed source, or anywhere else when the
-   source is gone), or **confirms** the existing snapshot as it is. Either one
-   clears the marker; a confirmed tombstone becomes a plain image with its
-   annotations, no longer a link. Every marked backlink in the library is listed in one
-   central review place, so links can be kept consistent without hunting for
-   them.
+6. **Changes and tombstones are reviewed.** Either way, the reader can
+   **re-do** the selection: on the changed source, or anywhere else when the
+   source is gone. Otherwise:
+   - for a **changed source**, the reader confirms the existing snapshot as
+     still faithful;
+   - for a **tombstone**, the reader accepts that the snapshot has no source.
+     It becomes a plain image with its annotations, no longer a link.
+
+   Either choice clears the marker. Every marked backlink in the library is
+   listed in one central review place, so links can be kept consistent without
+   hunting for them.
 
 7. **One source, many destinations.** When a region has been used in several
    places, clicking its forward-link indicator shows a short list of the

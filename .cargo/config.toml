@@ -1,0 +1,8 @@
+# Cross-compilation for the reMarkable Paper Pro (aarch64, glibc).
+#
+# `cargo device` builds the device client with cargo-zigbuild, which uses zig
+# as the linker so no reMarkable SDK is needed for pure-Rust code. The `.2.35`
+# suffix sets the oldest glibc the binary will need; the device's glibc is
+# newer (see docs/toolchain.md), and an older floor is always safe.
+[alias]
+device = "zigbuild --release -p stepanova-device --target aarch64-unknown-linux-gnu.2.35"

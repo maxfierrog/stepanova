@@ -1,0 +1,16 @@
+[package]
+name = "stepanova-server"
+description = "Self-hosted Stepanova server: agent harness, rendering, and storage."
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+stepanova-core.workspace = true
+anyhow.workspace = true
+
+[lints]
+workspace = true

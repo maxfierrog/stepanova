@@ -1,0 +1,23 @@
+# Compilation output
+/target
+
+# Rustfmt backup files
+**/*.rs.bk
+
+# Editor and OS files
+/.vscode
+/.idea
+**/.DS_Store
+
+# Profiling output
+flamegraph.svg
+
+# Local development data and environment
+/dev
+/env.sh
+.env
+
+# Proprietary reMarkable firmware, SDKs, and device dumps (never commit these)
+/firmware
+/sdk
+*.swu

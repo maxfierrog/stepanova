@@ -1,0 +1,20 @@
+[package]
+name = "stepanova-device"
+description = "Stepanova client for the reMarkable Paper Pro."
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "stepanova"
+path = "src/main.rs"
+
+[dependencies]
+stepanova-core.workspace = true
+anyhow.workspace = true
+
+[lints]
+workspace = true

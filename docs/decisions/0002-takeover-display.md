@@ -30,7 +30,8 @@ reMarkable SDK to build.
   ranges are read with `EVIOCGABS`, because device numbering and ranges differ
   between the device and the emulator.
 - A `Session` guard stops `xochitl`, holds a wake lock, and restores both on
-  exit or on `SIGTERM`/`SIGINT`.
+  exit or on `SIGTERM`/`SIGINT`. A detached watchdog restores them even if the
+  process dies without unwinding.
 
 ## Consequences
 
@@ -39,8 +40,15 @@ reMarkable SDK to build.
   on every release.
 - Stepanova cannot run side by side with the stock UI. Switching between them
   means stopping one and starting the other.
-- If the process is killed with `SIGKILL`, `xochitl` stays stopped until it is
-  restarted over SSH.
-- Verified in the emulator on 3.27.1.0: drawing works, and software latency
+- Firmware drift is real. Going from 3.27 to 3.29 (OS 5 to OS 6, Qt 6.8 to
+  6.10) did two things. It removed the `EPContentType` parameter from
+  `swapBuffers`, so both signatures are now resolved. It also added a second
+  lock file (`/tmp/epd.lock`) that the stopped `xochitl` leaves behind and that
+  makes the engine abort. CI smoke-tests each supported firmware in the
+  emulator to catch this kind of change.
+- The vendor engine aborts the process on initialization failure, so a
+  detached watchdog restarts `xochitl` whenever Stepanova exits, however it
+  exits.
+- Verified in the emulator on 3.27.1.0 and 3.29.1.0: drawing works, and software latency
   from pen event to refresh submission is about 5 ms at p50 and 9 ms at p95.
   The panel's own latency can only be measured on hardware.

@@ -54,9 +54,13 @@ jobs:
   smoke:
     needs: device
     runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix:
+        firmware: ["3.27.1.0", "3.29.1.0"]
     env:
       RMEMU_REF: bdab98106472e1aceab31d633b2dbc18607dd586
-      FIRMWARE: 3.27.1.0
+      FIRMWARE: ${{ matrix.firmware }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/checkout@v5
@@ -75,6 +79,7 @@ jobs:
         with:
           name: stepanova-aarch64
           path: dist
+      - run: scripts/emulator.py rmemu "$FIRMWARE"
       - run: rmemu/bin/rmemu start "$FIRMWARE"
       - run: scripts/smoke.sh rmemu dist/stepanova smoke.png
       - if: always()
@@ -82,7 +87,7 @@ jobs:
       - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke
+          name: smoke-${{ matrix.firmware }}
           path: |
             smoke.png
             emulator.log

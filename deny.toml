@@ -1,0 +1,34 @@
+# Dependency policy, enforced in CI by cargo-deny. Only permissive licenses
+# are allowed, so that Stepanova's own code stays relicensable (see
+# docs/decisions/0001-license-and-cla.md).
+
+[graph]
+targets = [
+    "aarch64-unknown-linux-gnu",
+    "x86_64-unknown-linux-gnu",
+    "aarch64-apple-darwin",
+]
+
+[licenses]
+allow = [
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "MIT",
+    "Unicode-3.0",
+    "Zlib",
+]
+confidence-threshold = 0.9
+
+[licenses.private]
+ignore = true
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

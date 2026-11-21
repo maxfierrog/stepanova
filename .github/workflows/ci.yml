@@ -44,3 +44,46 @@ jobs:
         with:
           name: stepanova-aarch64
           path: target/aarch64-unknown-linux-gnu/release/stepanova
+
+  licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: EmbarkStudios/cargo-deny-action@v2
+
+  smoke:
+    needs: device
+    runs-on: ubuntu-24.04-arm
+    env:
+      RMEMU_REF: bdab98106472e1aceab31d633b2dbc18607dd586
+      FIRMWARE: 3.27.1.0
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          repository: aetherino/rmemu
+          ref: ${{ env.RMEMU_REF }}
+          path: rmemu
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/cache@v4
+        with:
+          path: rmemu/firmware
+          key: rmpp-firmware-${{ env.FIRMWARE }}
+      - uses: actions/download-artifact@v5
+        with:
+          name: stepanova-aarch64
+          path: dist
+      - run: rmemu/bin/rmemu start "$FIRMWARE"
+      - run: scripts/smoke.sh rmemu dist/stepanova smoke.png
+      - if: always()
+        run: rmemu/bin/rmemu logs > emulator.log 2>&1 || true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke
+          path: |
+            smoke.png
+            emulator.log
+          if-no-files-found: ignore

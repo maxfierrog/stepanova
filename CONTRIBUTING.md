@@ -58,7 +58,12 @@ semantic versioning.
   cargo clippy --workspace --all-targets -- -D warnings
   cargo test --workspace
   cargo device
+  scripts/smoke.sh ../rmemu target/aarch64-unknown-linux-gnu/release/stepanova
   ```
+
+  The last line runs the end-to-end smoke test on a running
+  [emulator](docs/toolchain.md#emulator). CI also checks dependency licenses
+  against [`deny.toml`](deny.toml).
 
 ## Documentation
 

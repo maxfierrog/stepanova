@@ -21,5 +21,7 @@ fn main() -> Result<()> {
     let session = Session::begin()?;
     let display = Display::open()?;
     let events = input::listen(display.width(), display.height())?;
-    Scribble::new(display).run(&session, events)
+    let scribble = Scribble::new(display);
+    eprintln!("stepanova: ready");
+    scribble.run(&session, events)
 }

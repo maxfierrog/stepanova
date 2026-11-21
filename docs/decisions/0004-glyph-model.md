@@ -22,9 +22,8 @@ nodes; Stepanova extends that tree to addressing and caching.
 
 2. **A document is a root glyph.** Every document has exactly one root, and the
    root's kind decides how the document is viewed:
-   - **Canvas:** a transparent, infinite grid with integer coordinates whose
-     unit is the display pixel. A new note is an empty canvas, which renders
-     as white.
+   - **Canvas:** a transparent, infinite grid with 64-bit integer
+     coordinates. A new note is an empty canvas, which renders as white.
    - **PDF** and **EPUB:** paginated roots. They drive the viewport (turn the
      page, jump from the outline, search), and other glyphs anchor to their
      pages.
@@ -94,8 +93,13 @@ nodes; Stepanova extends that tree to addressing and caching.
 - Anchoring over a paginated root is geometric, against a specific
   typesetting. Selectors over text also carry content anchors (like EPUB's
   Canonical Fragment Identifiers) so that they survive typesetting again.
-- Ink is stored at pixel precision, which is coarser than the digitizer (about
-  7 times on each axis).
+- The unit of every coordinate is TeX's scaled point (1 sp = 1/65536 pt,
+  about 5.4 nm). It is finer than any input can reach: zooming in about 3000
+  times at the pen digitizer's precision (about 16 µm) still does not reach
+  it. Its 64-bit range spans about 50 million km. It maps exactly onto points,
+  the unit of PDFs and typography, and it does not depend on the device, so the
+  same document measures the same on any display. Integers keep coordinates
+  exact and reproducible, and pixels only appear when a glyph is rendered.
 - Open: how deep attachment goes, that is, whether glyphs on a canvas (an
   image, a group) can carry other glyphs.
 - Marks drawn during navigation may use quality greys. Marks drawn live while

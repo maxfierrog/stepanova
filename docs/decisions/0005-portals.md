@@ -30,7 +30,12 @@ happens to it when its source changes or disappears.
 
 4. **A changed source is marked.** When the source glyph changes after the
    snapshot was taken, every backlink to it gains a "source changed" marker,
-   even if the change is not visible in the snapshot.
+   even if the change is not visible in the snapshot. Reviewing the change
+   clears the marker: the reader compares the snapshot with the current source
+   and either retakes the snapshot or keeps it as it is.
+
+   Every changed source and tombstone in the library is listed in one central
+   review place, so links can be kept consistent without hunting for them.
 
 5. **Deleting the source never deletes material.** If the source glyph or any
    of its ancestors is deleted, every backlink to it keeps its snapshot and the

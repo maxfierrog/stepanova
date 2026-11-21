@@ -47,14 +47,14 @@ semantic versioning.
 
 ## Standards
 
-- Code follows the [style guide](docs/style.md). Format with
-  `cargo +nightly fmt` (the formatter configuration uses nightly-only options).
+- Code follows the [style guide](style.md), which is mandatory. Format with
+  `cargo fmt`.
 - Keep changes self-contained and small; under roughly 250 changed lines is a
   good target.
 - Before pushing, run what CI runs:
 
   ```sh
-  cargo +nightly fmt --all -- --check
+  cargo fmt --all -- --check
   cargo clippy --workspace --all-targets -- -D warnings
   cargo test --workspace
   cargo device

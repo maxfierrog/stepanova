@@ -4,10 +4,7 @@
 
 use anyhow::Result;
 
-/* PROGRAM ENTRY */
-
-fn main() -> Result<()>
-{
+fn main() -> Result<()> {
     println!("stepanova {}", stepanova_core::VERSION);
     Ok(())
 }

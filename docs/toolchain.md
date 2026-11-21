@@ -100,18 +100,26 @@ Notes:
   Never disable the `xochitl` service; stopping it temporarily
   (`systemctl stop xochitl`) is fine.
 
-## Display and input (open question)
+## Display and input
 
-How Stepanova draws to the screen and reads pen input is not decided yet; it
-will be settled by experiments on the device. Known routes:
+Stepanova stops `xochitl` and drives reMarkable's e-paper engine directly; see
+[decision 0002](decisions/0002-takeover-display.md). The device binary handles
+the takeover itself. To try it in the emulator:
 
-- **Own Qt Quick app** using reMarkable's `epaper` QPA plugin
-  (`QT_QUICK_BACKEND=epaper ./app -platform epaper`), with `xochitl` stopped.
-  This is the officially documented path. It requires the SDK and Qt bindings.
-- **AppLoad + QTFB**: [xovi](https://github.com/asivery/xovi) (LGPL-3.0) hooks
-  `xochitl`, and [AppLoad](https://github.com/asivery/rm-appload) (GPL-3.0)
-  launches third-party apps inside it. A native binary gets a shared-memory
-  framebuffer (QTFB) and runs alongside the stock UI. This is the main
-  community route, but it depends on hooks that firmware updates can break.
-- **Raw input devices**: `/dev/input/event*` (pen, touch, buttons) can be read
-  directly for full-fidelity pen data (pressure, tilt).
+```sh
+cargo device
+cd ../rmemu
+bin/rmemu push ../stepanova/target/aarch64-unknown-linux-gnu/release/stepanova /home/root/stepanova
+bin/rmemu ssh '(nohup /home/root/stepanova > /tmp/stepanova.log 2>&1 &)'
+bin/rmemu draw 300,500 900,450 1200,700 --pressure 0.7
+bin/rmemu screenshot shot.png --scale 0.25
+bin/rmemu power                   # exits Stepanova and restarts xochitl
+bin/rmemu ssh 'cat /tmp/stepanova.log'
+```
+
+On a device, run it the same way over SSH. Exit with the power button or a
+five-finger tap. If the process is killed hard, bring the stock UI back with
+`ssh root@10.11.99.1 systemctl start xochitl`.
+
+Input device numbering differs between the emulator (pen on `event1`) and the
+device (pen on `event2`), so devices are always found by name.

@@ -9,16 +9,12 @@
 /// The version of this crate, as declared in its manifest.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-/* TESTS */
-
 #[cfg(test)]
-mod test
-{
+mod test {
     use super::*;
 
     #[test]
-    fn version_is_declared()
-    {
+    fn version_is_declared() {
         assert!(!VERSION.is_empty());
     }
 }

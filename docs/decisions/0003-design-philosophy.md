@@ -51,6 +51,16 @@ in a thing in the world.
    greys between them, with value used to compose. Color belongs only to user
    content, such as ink and images.
 
+8. **Respect the material: e-paper.** Writing on an e-ink display is close to
+   writing on paper. Every redraw physically moves pigment, and fast updates
+   leave ghosting that builds up until a full refresh, so we minimize what has to
+   be erased. The canvas is a completely white background with minimal lines.
+   Structure that is drawn once and rarely changes may use the full grey range
+   (drawn with slower, higher-quality waveforms). Anything that changes often
+   (ink, selection marks, feedback) is thin, black or white, and local, so it
+   can use the fastest 1-bit waveform without ghosting. Large areas never flip
+   between black and white.
+
 ## Consequences
 
 - Interaction, layout, typography, and visual language are decided after, and

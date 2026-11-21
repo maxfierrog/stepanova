@@ -22,14 +22,19 @@ nodes; Stepanova extends that tree to addressing and caching.
 
 2. **A document is a root glyph.** Every document has exactly one root, and the
    root's kind decides how the document is viewed:
-   - **Canvas:** a transparent, infinite grid with integer coordinates at the
-     smallest scale. A new note is an empty canvas, which renders as white.
+   - **Canvas:** a transparent, infinite grid with integer coordinates whose
+     unit is the display pixel. A new note is an empty canvas, which renders
+     as white.
    - **PDF** and **EPUB:** paginated roots. They drive the viewport (turn the
      page, jump from the outline, search), and other glyphs anchor to their
      pages.
 
    PDFs and EPUBs are always roots, never children. Bringing part of one into
    another document is done through a selection, not by placing the file.
+
+   An EPUB accepts highlights and selections but no handwriting. Ink is
+   geometric and an EPUB has no fixed geometry to anchor it to. Writing about a
+   book happens in a note, which links back to the book through a selection.
 
 3. **Pagination is a function.** A paginated root is its content typeset with
    stored layout parameters, so its pages are deterministic and reproducible.
@@ -54,17 +59,28 @@ nodes; Stepanova extends that tree to addressing and caching.
      viewport centers on that region and zooms to fit it proportionally;
    - `mark(selector)`, which draws an indicator for the selection that suits
      how it was made (an outline for a lasso, highlighting for a text range);
-   - a distance, either its own or inherited from its parent (see 7).
+   - a distance, either its own or inherited from its parent (see 8).
 
    A selection that spans several children belongs to their nearest common
    ancestor. For example, a text range across two pages is a selector on the
    paginated root.
 
-6. **Storage is separate from media.** Glyph data has a stable file format,
+6. **The tree is attachment, and layering is sibling order.** A glyph's parent
+   is what it moves with and is anchored to; that changes only when a glyph is
+   deliberately moved onto another one. Z-order is the order of a parent's
+   children, so layering never changes a link path:
+   - **up one and down one** step past the next sibling above or below that
+     overlaps the glyph, skipping siblings that do not;
+   - **front and back** move it to the end or the start of its siblings.
+
+   Each parent keeps a spatial index of its children so overlap queries stay
+   cheap however many siblings there are.
+
+7. **Storage is separate from media.** Glyph data has a stable file format,
    stored apart from the immutable media it annotates. Every bit of markup
    state can be reconstructed from that file plus the media.
 
-7. **Caching follows distance.** Each glyph defines what "near" means inside
+8. **Caching follows distance.** Each glyph defines what "near" means inside
    itself or inherits that from its parent: Euclidean distance on a canvas, and
    page distance weighted by reading direction in a paginated root. Following
    a link jumps to its target in one tap, so the targets of visible links are
@@ -78,10 +94,10 @@ nodes; Stepanova extends that tree to addressing and caching.
 - Anchoring over a paginated root is geometric, against a specific
   typesetting. Selectors over text also carry content anchors (like EPUB's
   Canonical Fragment Identifiers) so that they survive typesetting again.
-- Open: what handwriting over an EPUB does when the book is typeset again
-  (it could stay bound to the old layout, or follow its nearest content
-  anchor).
-- Open: the physical unit of the root grid.
+- Ink is stored at pixel precision, which is coarser than the digitizer (about
+  7 times on each axis).
+- Open: how deep attachment goes, that is, whether glyphs on a canvas (an
+  image, a group) can carry other glyphs.
 - Marks drawn during navigation may use quality greys. Marks drawn live while
   selecting must stay thin, 1-bit, and local ([0003](0003-design-philosophy.md),
   principle 8).
